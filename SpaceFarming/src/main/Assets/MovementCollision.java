@@ -12,126 +12,6 @@ public class MovementCollision extends Collision {
         super(entity, type, amount, hitbox);
     }
 
-
-    //slight changes may need to be made to account for movement while scrolling
-    public void checkTile() {
-        checkTile(entity.collisionAmount);
-    }
-
-    public void checkTile(double cAmount) {
-        int entityLeftWorldX = (int)(entity.worldX + entity.solidArea.x + entity.imgOffX);
-        int entityRightWorldX = (int)(entity.worldX + entity.solidArea.x + entity.solidArea.width + entity.imgOffX);
-        int entityTopWorldY = (int)(entity.worldY + entity.solidArea.y + entity.imgOffY);
-        int entityBottomWorldY = (int)(entity.worldY + entity.solidArea.y + entity.solidArea.height + entity.imgOffY);
-
-        int entityLeftCol = entityLeftWorldX/entity.gp.originalTileSize;
-        int entityRightCol = entityRightWorldX/entity.gp.originalTileSize;
-        int entityTopRow = entityTopWorldY/entity.gp.originalTileSize;
-        int entityBottomRow = entityBottomWorldY/entity.gp.originalTileSize;
-
-        int[] tileNum;
-
-        if(!entity.status.contains("Idle") && !entity.status.contains("No_Move")) {
-            entity.collisionAmount = 10000000.0;
-            entity.collisionOn = false;
-
-            double amtU = 10000000.0;
-            if(entity.direction.contains("up")) {
-                tileNum = new int[entityRightCol - entityLeftCol + 1];
-                entityTopRow = (int)((entityTopWorldY + (entity.speedUsedY * cAmount))/entity.gp.originalTileSize);
-                for(int i = 0; i <= entityRightCol - entityLeftCol; i++) {
-                    tileNum[i] = entity.gp.tileM.map.mapTileNum[entityRightCol - i][entityTopRow];
-                }
-                for(int i = 0; i < tileNum.length; i ++) {
-                    for(int j = 0; j < type.length; j++) {
-                        if(entity.gp.tileM.map.tile[tileNum[i]].collision && entity.gp.tileM.map.tile[tileNum[i]].type == type[j]) {
-                            entity.collisionOn = true;
-                            entity.collisionAmount = entity.collisionAmount > amount[j] ? amount[j]: entity.collisionAmount;
-                            amtU = amtU > amount[j] ? amount[j] : amtU;
-                        }
-                    }
-                }
-                entityTopRow = entityTopWorldY/entity.gp.originalTileSize;
-            }
-            double amtD = 10000000.0;
-            if(entity.direction.contains("down")) {
-                tileNum = new int[entityRightCol - entityLeftCol + 1];
-                entityBottomRow = (int)((entityBottomWorldY + (entity.speedUsedY * cAmount))/entity.gp.originalTileSize);
-                for(int i = 0; i <= entityRightCol - entityLeftCol; i++) {
-                    tileNum[i] = entity.gp.tileM.map.mapTileNum[entityRightCol - i][entityBottomRow];
-                }
-                for(int i = 0; i < tileNum.length; i ++) {
-                    for(int j = 0; j < type.length; j++) {
-                        if(entity.gp.tileM.map.tile[tileNum[i]].collision && entity.gp.tileM.map.tile[tileNum[i]].type == type[j]) {
-                            entity.collisionOn = true;
-                            entity.collisionAmount = entity.collisionAmount > amount[j] ? amount[j]: entity.collisionAmount;
-                            amtD = amtD > amount[j] ? amount[j] : amtD;
-                        }
-                    }
-                }
-                entityBottomRow = entityBottomWorldY/entity.gp.originalTileSize;
-            }
-            double amtL = 10000000.0;
-            if(entity.direction.contains("left")) {
-                tileNum = new int[entityBottomRow - entityTopRow + 1];
-                entityLeftCol = (int)((entityLeftWorldX + (entity.speedUsedX * cAmount))/entity.gp.originalTileSize);
-                for(int i = 0; i <= entityBottomRow - entityTopRow; i++) {
-                    tileNum[i] = entity.gp.tileM.map.mapTileNum[entityLeftCol][entityBottomRow - i];
-                }
-                for(int i = 0; i < tileNum.length; i ++) {
-                    for(int j = 0; j < type.length; j++) {
-                        if(entity.gp.tileM.map.tile[tileNum[i]].collision && entity.gp.tileM.map.tile[tileNum[i]].type == type[j]) {
-                            entity.collisionOn = true;
-                            entity.collisionAmount = entity.collisionAmount > amount[j] ? amount[j]: entity.collisionAmount;
-                            amtL = amtL > amount[j] ? amount[j] : amtL;
-                        }
-                    }
-                }
-                entityLeftCol = entityLeftWorldX/entity.gp.originalTileSize;
-            }
-            double amtR = 10000000.0;
-            if(entity.direction.contains("right")) {
-                tileNum = new int[entityBottomRow - entityTopRow + 1];
-                entityRightCol = (int)((entityRightWorldX + (entity.speedUsedX * cAmount))/entity.gp.originalTileSize);
-                for(int i = 0; i <= entityBottomRow - entityTopRow; i++) {
-                    tileNum[i] = entity.gp.tileM.map.mapTileNum[entityRightCol][entityBottomRow - i];
-                }
-                for(int i = 0; i < tileNum.length; i ++) {
-                    for(int j = 0; j < type.length; j++) {
-                        if(entity.gp.tileM.map.tile[tileNum[i]].collision && entity.gp.tileM.map.tile[tileNum[i]].type == type[j]) {
-                            entity.collisionOn = true;
-                            entity.collisionAmount = entity.collisionAmount > amount[j] ? amount[j]: entity.collisionAmount;
-                            amtR = amtR > amount[j] ? amount[j] : amtR;
-                        }
-                    }
-                }
-                entityRightCol = entityRightWorldX/entity.gp.originalTileSize;
-            }
-
-            //checks that the right tiles will be checked based on how fast an entity moves on specific tiles
-            if(cAmount < entity.collisionAmount) {
-                checkTile(entity.collisionAmount);
-            }
-
-            if(amtU == 0.0 || amtD == 0.0) {
-                entity.speedUsedY = 0.0;
-                if(entity.direction.contains("left")) {
-                    entity.collisionAmount = amtL;
-                }  else if(entity.direction.contains("right")) {
-                    entity.collisionAmount = amtR;
-                }
-            }
-            if(amtL == 0.0 || amtR == 0.0) {
-                entity.speedUsedX = 0.0;
-                if(entity.direction.contains("up")) {
-                    entity.collisionAmount = amtU;
-                }  else if(entity.direction.contains("down")) {
-                    entity.collisionAmount = amtD;
-                }
-            }
-        }
-    }
-
     public void genCheckTile() {
         genCheckTile(entity.collisionAmount);
     }
@@ -175,7 +55,6 @@ public class MovementCollision extends Collision {
                     for(int j = 0; j < type.length; j++) {
                         //rRect.intersects(new Rectangle((int)(entityLeftWorldX + (i * entity.gp.originalTileSize)), entityTopRow * entity.gp.originalTileSize, entity.gp.originalTileSize, entity.gp.originalTileSize))
                         if(entity.gp.tileM.map.tile[tileNum[i]].type == type[j]) {
-                            System.out.println("here");
                             entity.collisionOn = true;
                             entity.collisionAmount = entity.collisionAmount > amount[j] ? amount[j]: entity.collisionAmount;
                             amtU = amtU > amount[j] ? amount[j] : amtU;
@@ -501,3 +380,127 @@ public class MovementCollision extends Collision {
         return index;
     }
 }
+
+
+//OLD Version, unsure if still useful in any way
+/*
+    //slight changes may need to be made to account for movement while scrolling
+    public void checkTile() {
+        checkTile(entity.collisionAmount);
+    }
+
+
+    public void checkTile(double cAmount) {
+        int entityLeftWorldX = (int)(entity.worldX + entity.solidArea.x + entity.imgOffX);
+        int entityRightWorldX = (int)(entity.worldX + entity.solidArea.x + entity.solidArea.width + entity.imgOffX);
+        int entityTopWorldY = (int)(entity.worldY + entity.solidArea.y + entity.imgOffY);
+        int entityBottomWorldY = (int)(entity.worldY + entity.solidArea.y + entity.solidArea.height + entity.imgOffY);
+
+        int entityLeftCol = entityLeftWorldX/entity.gp.originalTileSize;
+        int entityRightCol = entityRightWorldX/entity.gp.originalTileSize;
+        int entityTopRow = entityTopWorldY/entity.gp.originalTileSize;
+        int entityBottomRow = entityBottomWorldY/entity.gp.originalTileSize;
+
+        int[] tileNum;
+
+        if(!entity.status.contains("Idle") && !entity.status.contains("No_Move")) {
+            entity.collisionAmount = 10000000.0;
+            entity.collisionOn = false;
+
+            double amtU = 10000000.0;
+            if(entity.direction.contains("up")) {
+                tileNum = new int[entityRightCol - entityLeftCol + 1];
+                entityTopRow = (int)((entityTopWorldY + (entity.speedUsedY * cAmount))/entity.gp.originalTileSize);
+                for(int i = 0; i <= entityRightCol - entityLeftCol; i++) {
+                    tileNum[i] = entity.gp.tileM.map.mapTileNum[entityRightCol - i][entityTopRow];
+                }
+                for(int i = 0; i < tileNum.length; i ++) {
+                    for(int j = 0; j < type.length; j++) {
+                        if(entity.gp.tileM.map.tile[tileNum[i]].collision && entity.gp.tileM.map.tile[tileNum[i]].type == type[j]) {
+                            entity.collisionOn = true;
+                            entity.collisionAmount = entity.collisionAmount > amount[j] ? amount[j]: entity.collisionAmount;
+                            amtU = amtU > amount[j] ? amount[j] : amtU;
+                        }
+                    }
+                }
+                entityTopRow = entityTopWorldY/entity.gp.originalTileSize;
+            }
+            double amtD = 10000000.0;
+            if(entity.direction.contains("down")) {
+                tileNum = new int[entityRightCol - entityLeftCol + 1];
+                entityBottomRow = (int)((entityBottomWorldY + (entity.speedUsedY * cAmount))/entity.gp.originalTileSize);
+                for(int i = 0; i <= entityRightCol - entityLeftCol; i++) {
+                    tileNum[i] = entity.gp.tileM.map.mapTileNum[entityRightCol - i][entityBottomRow];
+                }
+                for(int i = 0; i < tileNum.length; i ++) {
+                    for(int j = 0; j < type.length; j++) {
+                        if(entity.gp.tileM.map.tile[tileNum[i]].collision && entity.gp.tileM.map.tile[tileNum[i]].type == type[j]) {
+                            entity.collisionOn = true;
+                            entity.collisionAmount = entity.collisionAmount > amount[j] ? amount[j]: entity.collisionAmount;
+                            amtD = amtD > amount[j] ? amount[j] : amtD;
+                        }
+                    }
+                }
+                entityBottomRow = entityBottomWorldY/entity.gp.originalTileSize;
+            }
+            double amtL = 10000000.0;
+            if(entity.direction.contains("left")) {
+                tileNum = new int[entityBottomRow - entityTopRow + 1];
+                entityLeftCol = (int)((entityLeftWorldX + (entity.speedUsedX * cAmount))/entity.gp.originalTileSize);
+                for(int i = 0; i <= entityBottomRow - entityTopRow; i++) {
+                    tileNum[i] = entity.gp.tileM.map.mapTileNum[entityLeftCol][entityBottomRow - i];
+                }
+                for(int i = 0; i < tileNum.length; i ++) {
+                    for(int j = 0; j < type.length; j++) {
+                        if(entity.gp.tileM.map.tile[tileNum[i]].collision && entity.gp.tileM.map.tile[tileNum[i]].type == type[j]) {
+                            entity.collisionOn = true;
+                            entity.collisionAmount = entity.collisionAmount > amount[j] ? amount[j]: entity.collisionAmount;
+                            amtL = amtL > amount[j] ? amount[j] : amtL;
+                        }
+                    }
+                }
+                entityLeftCol = entityLeftWorldX/entity.gp.originalTileSize;
+            }
+            double amtR = 10000000.0;
+            if(entity.direction.contains("right")) {
+                tileNum = new int[entityBottomRow - entityTopRow + 1];
+                entityRightCol = (int)((entityRightWorldX + (entity.speedUsedX * cAmount))/entity.gp.originalTileSize);
+                for(int i = 0; i <= entityBottomRow - entityTopRow; i++) {
+                    tileNum[i] = entity.gp.tileM.map.mapTileNum[entityRightCol][entityBottomRow - i];
+                }
+                for(int i = 0; i < tileNum.length; i ++) {
+                    for(int j = 0; j < type.length; j++) {
+                        if(entity.gp.tileM.map.tile[tileNum[i]].collision && entity.gp.tileM.map.tile[tileNum[i]].type == type[j]) {
+                            entity.collisionOn = true;
+                            entity.collisionAmount = entity.collisionAmount > amount[j] ? amount[j]: entity.collisionAmount;
+                            amtR = amtR > amount[j] ? amount[j] : amtR;
+                        }
+                    }
+                }
+                entityRightCol = entityRightWorldX/entity.gp.originalTileSize;
+            }
+
+            //checks that the right tiles will be checked based on how fast an entity moves on specific tiles
+            if(cAmount < entity.collisionAmount) {
+                checkTile(entity.collisionAmount);
+            }
+
+            if(amtU == 0.0 || amtD == 0.0) {
+                entity.speedUsedY = 0.0;
+                if(entity.direction.contains("left")) {
+                    entity.collisionAmount = amtL;
+                }  else if(entity.direction.contains("right")) {
+                    entity.collisionAmount = amtR;
+                }
+            }
+            if(amtL == 0.0 || amtR == 0.0) {
+                entity.speedUsedX = 0.0;
+                if(entity.direction.contains("up")) {
+                    entity.collisionAmount = amtU;
+                }  else if(entity.direction.contains("down")) {
+                    entity.collisionAmount = amtD;
+                }
+            }
+        }
+    }
+     */

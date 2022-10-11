@@ -1,9 +1,7 @@
 package entity;
 
 import Abilities.SuperAbility;
-import Animations.ParasiteBrainWorm.A_PBW_IdleAG;
-import Animations.ParasiteBrainWorm.A_PBW_IdleUG;
-import Animations.ParasiteBrainWorm.A_PBW_MovementUG;
+import Animations.ParasiteBrainWorm.*;
 import Animations.PlaceHolderAnimation;
 import Animations.SuperAnimation;
 import main.Assets.MovementCollision;
@@ -33,17 +31,15 @@ public class ParasiteBrainWorm extends Entity {
         imgSizeX = 16;
         imgSizeY = 20;
 
-        mCollision = new MovementCollision(this, new String[]{"Water", "Land", "Water-Edge"}, new double[]{0.0, 5.0, 0.0}, new Rectangle(0, 14, 150, 50));
-        solidArea = new Rectangle(0, 14, 150, 50);
-        solidAreaBase = new Rectangle(0, 14, 150, 50);
+        mCollision = new MovementCollision(this, new String[]{"Water", "Land", "Water-Edge"}, new double[]{0.25, 5.0, 0.5}, new Rectangle(0, 14, 50, 10));
+        solidArea = new Rectangle(0, 14, 50, 10);
+        solidAreaBase = new Rectangle(0, 14, 50, 10);
         setDefaultValues();
     }
 
     public void update() {
         super.update();
         //what the ai does
-
-        super.walk();
 
         super.updateImage();
 

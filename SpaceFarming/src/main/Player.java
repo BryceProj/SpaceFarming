@@ -32,7 +32,7 @@ public class Player {
 
     public void addEntity(String lifeform) {
         switch (lifeform) {
-            case "FlyGuy":
+            case "Fly Guy":
                 ent.add(new FlyGuy(gp));
                 break;
             case "Brain Worm":
