@@ -17,10 +17,10 @@ public class Olune_Walk extends SuperAnimation {
         movingHitBox = new Rectangle(0, 84, 140, 50);
         try {
             images[0][0] = ImageIO.read(getClass().getResourceAsStream("/EntitySprites/Olune/Olune_l_s"));
-            offsetSize[0][0][0] = -8;
-            offsetSize[0][0][1] = -13;
-            offsetSize[0][0][2] = 16;
-            offsetSize[0][0][3] = 20;
+            offsetSize[0][0][0] = -70;
+            offsetSize[0][0][1] = -67;
+            offsetSize[0][0][2] = 140;
+            offsetSize[0][0][3] = 134;
         }
         catch(IOException e) {
             e.printStackTrace();
