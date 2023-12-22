@@ -16,7 +16,7 @@ public class OBJ_SoulParticle extends SuperObject {
         this.gp = gp;
         this.worldX = soul.worldX;
         this.worldY = soul.worldY;
-        timer = new Timer(new int[]{1000});
+        timer = new Timer(new int[]{1000}, false);
         name = "Soul Particle";
 
         oX = 0;

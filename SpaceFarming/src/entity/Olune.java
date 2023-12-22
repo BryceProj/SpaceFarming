@@ -16,7 +16,7 @@ public class Olune extends Entity {
         super(gp);
 
         name = "Olune";
-        abilities = new SuperAbility[3];
+        abilities = new SuperAbility[2];
         abilities[0] = new SuperAbility("Idle", new String[]{"Idle"}, new SuperAnimation[]{new Olune_Idle()});
         abilities[1] = new SuperAbility("Walk", new String[]{"Walk"}, new SuperAnimation[]{new Olune_Walk()});
 
@@ -25,9 +25,9 @@ public class Olune extends Entity {
         imgSizeX = 140;
         imgSizeY = 134;
 
-        mCollision = new MovementCollision(this, new String[]{"Land", "Water", "Water-Edge"}, new double[]{1.0, 1.0, 1.0}, new Rectangle(0, 84, 140, 50));
+        mCollision = new MovementCollision(this, new String[]{"Land", "Water", "Water-Edge"}, new double[]{1.0, 0.0, 0.0}, new Rectangle(0, 84, 140, 50));
         solidArea = new Rectangle(0, 84, 140, 50);
-        solidAreaBase = new Rectangle(0, 84, 140, 50);
+        //solidAreaBase = new Rectangle(0, 84, 140, 50);
         setDefaultValues();
     }
 
@@ -62,7 +62,7 @@ public class Olune extends Entity {
         speed45 = (speed / Math.sqrt(2));
         speedUsedX = 0;
         speedUsedY = 0;
-        direction = "down";
+        direction = "Down";
         status = "Idle";
     }
 
@@ -87,7 +87,7 @@ public class Olune extends Entity {
         }
 
         if(keyH.upPressed && keyH.leftPressed && !vertLock && !horLock) {
-            direction = "up left";
+            direction = "Up Left";
             status = "Walk";
             speedUsedX = -speed45;
             speedUsedY = -speed45;
@@ -130,7 +130,7 @@ public class Olune extends Entity {
 
         if(keyAmt == 0) {
             if(status == "Walk") {
-                status = "Idle Underground";
+                status = "Idle";
             }
         } else if(keyAmt > 0 && !status.contains("Idle") && !status.contains("No_Move")) {
             //tile collision

@@ -1,6 +1,7 @@
 package Animations.Fish;
 
 import Animations.SuperAnimation;
+import main.Assets.Timer;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -12,8 +13,7 @@ public class FishIdleAnimation extends SuperAnimation {
         //(xoff, yoff, xsize, ysize)
         images = new BufferedImage[1][8];
         offsetSize = new int[1][8][4];
-        timing = new int[]{0, 100, 110, 120, 130, 140, 150, 160};
-        animationTime = 170;
+        timer = new Timer(new int[]{100, 10, 10, 10, 10, 10, 10, 10}, true);
         movingHitBox = new Rectangle(0, 0, 22, 66);
         oneTime = true;
         try {

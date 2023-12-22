@@ -1,6 +1,7 @@
 package Animations.FlyGuy;
 
 import Animations.SuperAnimation;
+import main.Assets.Timer;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -12,8 +13,8 @@ public class FlyGuyIdleAnimation extends SuperAnimation {
 
         images = new BufferedImage[4][2];
         offsetSize = new int[4][2][4];
-        timing = new int[] {0, 15};
-        animationTime = 30;
+        timer = new Timer(new int[] {15, 15}, true);
+        nextStatus = "Idle";
         try {
             images[0][0] = ImageIO.read(getClass().getResourceAsStream("/EntitySprites/BugMan/Bug Man-UI1.png"));
             images[0][1] = ImageIO.read(getClass().getResourceAsStream("/EntitySprites/BugMan/Bug Man-UI2.png"));
@@ -22,7 +23,7 @@ public class FlyGuyIdleAnimation extends SuperAnimation {
 
             for(int i = 0; i < 2; i++) {
                 for(int j = 0; j < 2; j++) {
-                    offsetSize[i][j][0] = -11;
+                    offsetSize[i][j][0] = -12;
                     offsetSize[i][j][1] = -50;
                     offsetSize[i][j][2] = 24;
                     offsetSize[i][j][3] = 62;

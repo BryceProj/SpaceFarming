@@ -1,9 +1,8 @@
 package main;
 
 import entity.*;
-import main.Assets.HealthBar;
+import main.Assets.StatBar;
 import main.Assets.ObjectSetter;
-import main.Assets.CollisionChecker;
 import main.Assets.KeyHandler;
 import object.OBJ_Soul;
 import object.OBJ_SoulParticle;
@@ -16,7 +15,6 @@ import java.awt.*;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -66,7 +64,7 @@ public class GamePanel extends JPanel implements Runnable {
     EnvironmentManager eManager = new EnvironmentManager(this);
     Thread gameThread;
     //public CollisionChecker cMoveChecker = new CollisionChecker(this);
-    public HealthBar healthBar = new HealthBar(new ParasiteBrainWorm(this));
+    public StatBar statBar = new StatBar(new ParasiteBrainWorm(this));
     public Player player = new Player(this, keyH);
 
 
@@ -91,9 +89,11 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void setUp() {
-        player.addEntity("Brain Worm"); //Brain Worm
+        //player.addEntity("Fly Guy"); //Brain Worm
+        player.addEntity("Fly Guy"); //Brain Worm
+        player.addEntity("Brain Worm");
         System.out.println(player.ent.get(0).worldX);
-        healthBar = new HealthBar(player.ent.get(0));
+        statBar = new StatBar(player.ent.get(0));
         //player.addEntity("FlyGuy");
         aSetter.setObject();
         player.setSoul((OBJ_Soul) obj.get(0));
@@ -101,9 +101,11 @@ public class GamePanel extends JPanel implements Runnable {
 
         eManager.setUp();
         //entities.add(new ParasiteBrainWorm(this));
-        entities.add(new FlyGuy(this));
-        entities.add(new FlyGuy(this));
-        entities.add(new FlyGuy(this));
+        entities.add(new ParasiteBrainWorm(this));
+        //entities.add(new Olune(this));
+        //entities.add(new FlyGuy(this));
+        //entities.add(new FlyGuy(this));
+        //entities.add(new FlyGuy(this));
         for(int i = 0; i < 10; i++) {
             entities.add(new Fish(this));
         }
@@ -241,7 +243,7 @@ public class GamePanel extends JPanel implements Runnable {
         //entities
         //player.draw(g2);
 
-        healthBar.draw(g2);
+        statBar.draw(g2);
 
         g2.dispose();
     }

@@ -19,7 +19,7 @@ public abstract class SuperObject {
     public int solidAreaY = 0;
     public int imgOffX, imgOffY;
     public int imgSizeX, imgSizeY;
-    public Timer timer = new Timer(new int[]{0});
+    public Timer timer = new Timer(new int[]{0}, false);
 
     public SuperObject() {}
 

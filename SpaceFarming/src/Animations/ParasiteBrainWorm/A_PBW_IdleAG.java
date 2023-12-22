@@ -1,6 +1,7 @@
 package Animations.ParasiteBrainWorm;
 
 import Animations.SuperAnimation;
+import main.Assets.Timer;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -12,8 +13,7 @@ public class A_PBW_IdleAG extends SuperAnimation {
         //(xoff, yoff, xsize, ysize)
         images = new BufferedImage[1][10];
         offsetSize = new int[1][10][4];
-        timing = new int[] {0, 10, 20, 30, 40, 50, 60, 70, 80, 90};
-        animationTime = 100;
+        timer = new Timer(new int[] {10, 10, 10, 10, 10, 10, 10, 10, 10, 10}, true);
         movingHitBox = new Rectangle(0, 0, 15, 5);
         try {
                 images[0][0] = ImageIO.read(getClass().getResourceAsStream("/EntitySprites/ParasiteBrainWorm/PBW-Idle0.png"));

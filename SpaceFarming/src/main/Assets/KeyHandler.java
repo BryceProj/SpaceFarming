@@ -8,6 +8,9 @@ public class KeyHandler implements KeyListener {
     public boolean upPressed, downPressed, leftPressed, rightPressed;
     public boolean shiftPressed, spacePressed, enterPressed;
 
+    public boolean xPressed;
+    public boolean enterHeld;
+
     public KeyHandler() {}
 
     @Override
@@ -38,7 +41,11 @@ public class KeyHandler implements KeyListener {
             spacePressed = true;
         }
         if(code == KeyEvent.VK_ENTER) {
+            if(enterPressed) { enterHeld = true; }
             enterPressed = true;
+        }
+        if(code == KeyEvent.VK_X) {
+            xPressed = true;
         }
     }
 
@@ -66,6 +73,10 @@ public class KeyHandler implements KeyListener {
         }
         if(code == KeyEvent.VK_ENTER) {
             enterPressed = false;
+            enterHeld = false;
+        }
+        if(code == KeyEvent.VK_X) {
+            xPressed = false;
         }
     }
 }

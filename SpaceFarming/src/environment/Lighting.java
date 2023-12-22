@@ -38,11 +38,10 @@ public class Lighting {
         }
 
         RadialGradientPaint gPaint = new RadialGradientPaint((int)centerX, (int)centerY, (int)(gp.scale * circleSize / 2), fraction, color);
-
         g2.setPaint(gPaint);
         g2.fill(lightArea);
         g2.fill(screenArea);
-        g2.dispose();;
+        g2.dispose();
     }
 
     public void update() {

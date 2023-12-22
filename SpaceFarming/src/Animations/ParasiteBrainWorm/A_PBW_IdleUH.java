@@ -1,6 +1,7 @@
 package Animations.ParasiteBrainWorm;
 
 import Animations.SuperAnimation;
+import main.Assets.Timer;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -10,8 +11,7 @@ public class A_PBW_IdleUH extends SuperAnimation {
     public A_PBW_IdleUH() {
         images = new BufferedImage[1][3];
         offsetSize = new int[1][3][4];
-        timing = new int[]{0, 10, 20};
-        animationTime = 30;
+        timer = new Timer(new int[]{10, 10, 10}, true);
 
         try {
             images[0][0] = ImageIO.read(getClass().getResourceAsStream("/objects/PBW-IdleUnderHole0.png"));

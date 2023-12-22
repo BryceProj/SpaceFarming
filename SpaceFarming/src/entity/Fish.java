@@ -32,7 +32,7 @@ public class Fish extends Entity {
 
         mCollision = new MovementCollision(this, new String[]{"Water", "Land", "Water-Edge"}, new double[]{1.0, 0.0, 0.0}, new Rectangle(0, 0, imgSizeX, imgSizeY));
         solidArea = new Rectangle(0, 0, imgSizeX, imgSizeY);
-        solidAreaBase = new Rectangle(solidArea);
+        //solidAreaBase = new Rectangle(solidArea);
         setDefaultValues();
     }
 

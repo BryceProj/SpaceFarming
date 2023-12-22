@@ -33,7 +33,7 @@ public class ParasiteBrainWorm extends Entity {
 
         mCollision = new MovementCollision(this, new String[]{"Water", "Land", "Water-Edge"}, new double[]{0.25, 5.0, 0.5}, new Rectangle(0, 14, 50, 10));
         solidArea = new Rectangle(0, 14, 50, 10);
-        solidAreaBase = new Rectangle(0, 14, 50, 10);
+        //solidAreaBase = new Rectangle(0, 14, 50, 10);
         setDefaultValues();
     }
 

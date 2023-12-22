@@ -2,11 +2,14 @@ package main.Assets;
 
 public class Timer {
     public int[] maxTime;
-    int counter = 0;
+    public int counter = 0;
     public int current = 0;
 
-    public Timer(int[] maxTime) {
+    public boolean repeating = false;
+
+    public Timer(int[] maxTime, boolean repeating) {
         this.maxTime = maxTime;
+        this.repeating = repeating;
     }
 
     public int update() {
@@ -15,15 +18,20 @@ public class Timer {
             current++;
             if (current >= maxTime.length) {
                 current = 0;
-                return maxTime.length + 1;
+                return repeating ? 0 : maxTime.length + 1;
             }
         } else {
             counter++;
         }
         return current;
     }
+    public void reset() {
+        counter = 0;
+        current = 0;
+    }
 
     public int size() {
         return maxTime.length;
     }
+
 }

@@ -2,8 +2,10 @@ package main;
 
 import entity.Entity;
 import entity.FlyGuy;
+import entity.Olune;
 import entity.ParasiteBrainWorm;
 import main.Assets.KeyHandler;
+import main.Assets.Timer;
 import object.OBJ_Soul;
 
 import java.awt.*;
@@ -15,7 +17,7 @@ public class Player {
     public double screenX, screenY;
     public double worldX, worldY;
     public int cameraIndex = 0;
-
+    public boolean sprint = false;
     KeyHandler keyH;
     public ArrayList<Entity> ent = new ArrayList<Entity>();
     public OBJ_Soul soul;
@@ -37,6 +39,9 @@ public class Player {
                 break;
             case "Brain Worm":
                 ent.add(new ParasiteBrainWorm(gp));
+                break;
+            case "Olune":
+                ent.add(new Olune(gp));
         }
     }
 
@@ -49,28 +54,58 @@ public class Player {
         this.soul = soul;
     }
 
+    Timer timerE = new Timer(new int[]{3000000}, false);
+    Timer timerS = new Timer(new int[]{3000000}, false);
+
     public void update() {
-//        if(keyH.spacePressed) {
-//            cameraIndex = 1;
-//        } else if(keyH.enterPressed) {
-//            cameraIndex = 0;
-//        }
+        if(keyH.enterPressed) { //conditions for switching entities
+            if (timerE.counter == 0) {
+                if (cameraIndex == ent.size() - 1) {
+                    cameraIndex = 0;
+                } else {
+                    cameraIndex++;
+                }
+            }
+            timerE.update();
+        } else {
+            timerE.reset();
+        }
+        if(keyH.xPressed) {
+            if(timerS.counter == 0) {
+                if(gp.eManager.getViewMode() == 0) {
+                    gp.eManager.setViewMode(1);
+                } else {
+                    gp.eManager.setViewMode(0);
+                }
+                System.out.println(gp.eManager.getViewMode());
+            }
+            timerS.update();
+        } else {
+            timerS.reset();
+        }
 
         for(int i = 0; i < ent.size(); i++) {
             if(ent.get(i) != null) {
                 if(i == cameraIndex) {
+                    //drawStamina(g);
                     ent.get(i).playerUpdate(keyH);
+                    worldX = ent.get(cameraIndex).worldX;
+                    worldY = ent.get(cameraIndex).worldY;
+                    //System.out.println(ent.get(i).status + " " + ent.get(i).direction);
+                    //System.out.println(ent.get(i).stamina + "/" + ent.get(i).maxStamina);
                 }
                 else {
                     ent.get(i).update();
+
                 }
             }
         }
         //do this somewhere between to stop the moving
-        worldX = ent.get(cameraIndex).worldX;
-        worldY = ent.get(cameraIndex).worldY;
-    }
 
+    }
+    private void drawStamina(Graphics2D g2, int i) {
+
+    }
     public void draw(Graphics2D g2) {
         for(int i = 0; i < ent.size(); i++) {
             if(ent.get(i) != null) {

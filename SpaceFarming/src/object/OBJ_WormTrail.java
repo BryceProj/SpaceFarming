@@ -12,7 +12,7 @@ public class OBJ_WormTrail extends SuperObject {
         this.gp = gp;
         this.worldX = worldX + (Math.random() * 10 + (-5));
         this.worldY = worldY + (Math.random() * 10 + (-5));
-        timer = new Timer(new int[]{100, 100});
+        timer = new Timer(new int[]{100, 100}, false);
         name = "WormTrail";
         solidAreaX = 0;
         solidAreaY = 0 + (int)gp.scale;

@@ -3,7 +3,11 @@ package tile;
 import main.GamePanel;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
+import java.awt.image.FilteredImageSource;
+import java.awt.image.ImageFilter;
+import java.awt.image.ImageProducer;
 import java.io.*;
 import java.util.Random;
 
@@ -12,6 +16,8 @@ public class TileManager {
     GamePanel gp;
     public Map map;
     public int tileAnimationCounter;
+
+    public boolean greyScale = false;
 
     public TileManager(GamePanel gp) {
         this.gp = gp;
@@ -36,7 +42,15 @@ public class TileManager {
                    worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
                    worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
                     g2.translate((int)screenX, (int)screenY);
-                    g2.drawImage(map.tile[tileNum].image[map.tile[tileNum].currentFrame],0, 0, gp.tileSize, gp.tileSize, null);
+                    if(!greyScale) {
+                        g2.drawImage(map.tile[tileNum].image[map.tile[tileNum].currentFrame], 0, 0, gp.tileSize, gp.tileSize, null);
+                    } else {
+                        Image colorImage = map.tile[tileNum].image[map.tile[tileNum].currentFrame];
+                        ImageFilter iFilter = new GrayFilter(false, 0);
+                        ImageProducer imageProducer = new FilteredImageSource(colorImage.getSource(), iFilter);
+                        Image greyImage = Toolkit.getDefaultToolkit().createImage(imageProducer);
+                        g2.drawImage(greyImage, 0, 0, gp.tileSize, gp.tileSize, null);
+                    }
                     g2.translate(-(int)screenX, -(int)screenY);
                 }
             }

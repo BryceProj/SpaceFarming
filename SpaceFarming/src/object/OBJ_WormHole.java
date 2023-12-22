@@ -12,7 +12,7 @@ public class OBJ_WormHole extends SuperObject {
         this.gp = gp;
         this.worldX = worldX;
         this.worldY = worldY;
-        timer = new Timer(new int[]{1000, 300});
+        timer = new Timer(new int[]{1000, 300}, false);
         name = "WormHole";
         solidAreaX = 0;
         solidAreaY = 0 + (int)gp.scale;

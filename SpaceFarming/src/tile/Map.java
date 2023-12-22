@@ -59,6 +59,8 @@ public class Map {
 
     public void getTileImage() {
         try {
+
+            System.out.println(getClass().getResourceAsStream("/tiles/Water.png").toString());
             tile[0] = new Tile();
             tile[0].collision = true;
             tile[0].image[0] = ImageIO.read(getClass().getResourceAsStream("/tiles/Water.png"));

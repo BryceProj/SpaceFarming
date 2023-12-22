@@ -2,11 +2,14 @@ package entity;
 
 import Abilities.SuperAbility;
 import main.Assets.MovementCollision;
+import main.Assets.Timer;
 import main.GamePanel;
 import main.Assets.KeyHandler;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+
+import static java.lang.Math.abs;
 
 public abstract class Entity {
 
@@ -17,6 +20,13 @@ public abstract class Entity {
     public double speed, speed45, speedUsedX, speedUsedY;
 
     public String name;
+
+    public int maxStamina;
+    public int stamina;
+    Timer timerStaminaRegen1 = new Timer(new int[]{350}, false);
+    Timer timerStaminaRegen2 = new Timer(new int[]{75}, false);
+    public boolean staminaRegen1 = true;
+    public boolean staminaRegen2 = true;
 
     public int imgOffX;
     public int imgOffY;
@@ -32,7 +42,7 @@ public abstract class Entity {
 
     //Collisions
     public MovementCollision mCollision;
-    public Rectangle solidArea, solidAreaBase; //change animation to alter hitbox like currentOffSize
+    public Rectangle solidArea;
     public boolean collisionOn;
     public double collisionAmount = 1.0;
 
@@ -68,45 +78,149 @@ public abstract class Entity {
         screenY = (gp.scale * (worldY - gp.player.worldY)) + gp.player.screenY;
 
         boolean continuation = direction != lastDirection ? false : true;
+        if(direction.contains("Up") && lastDirection.contains("Up")) {      //allows smooth diagonal animation
+            continuation = true;
+        } else if(direction.contains("Down") && lastDirection.contains("Down")) {
+            continuation = true;
+        }
+
         for(int i = 0; i < abilities.length; i++) {
-            for(int j = 0; j < abilities[i].status.length; j++) {
+            for(int j = 0; j < abilities[i].status.length; j++) { //list of statuses to check
                 if(status == abilities[i].status[j]) {
                     abilities[i].animation[j].update(continuation);
                     solidArea = new Rectangle(abilities[i].animation[j].movingHitBox);
-                    solidAreaBase = new Rectangle(solidArea);
+                    //solidAreaPrint = new Rectangle(solidArea);
                     if(abilities[i].animation[j].oneTimeRaised) {
-                        status = abilities[i].animation[j].nextStatus;
-                        abilities[i].animation[j].updateTimes();
+                        continuation = false;
                         abilities[i].animation[j].oneTimeRaised = false;
-                        updateImage();
+                        //System.out.println(status);
                         return;
                     }
-//                    String usedDirection = direction;
-//                    if(direction == "up left" || direction == "up right") {
-//                        usedDirection = "up";
-//                    } else if(direction == "down left" || direction == "down right") {
-//                        usedDirection = "down";
-//                    }
-                    image = abilities[i].animation[j].draw(direction);
+                    if(direction.contains("Up")) { image = abilities[i].animation[j].draw("Up"); }
+                    else if(direction.contains("Down")) { image = abilities[i].animation[j].draw("Down"); }
+                    else if(direction.contains("Left")) { image = abilities[i].animation[j].draw("Left"); }
+                    else if(direction.contains("Right")) { image = abilities[i].animation[j].draw("Right"); }
                     imgOffX = abilities[i].animation[j].currentOffSize[0];
                     imgOffY = abilities[i].animation[j].currentOffSize[1];
                     imgSizeX = abilities[i].animation[j].currentOffSize[2];
                     imgSizeY = abilities[i].animation[j].currentOffSize[3];
                 }
             }
-            if(status == abilities[i].name) {
-
-            }
         }
     }
 
     public void setDefaultValues() {
         collisionOn = false;
-        direction = "down";
+        direction = "Down";
         status = "Idle";
     }
 
-    public void playerUpdate(KeyHandler keyH) {}
+    public void playerUpdate(KeyHandler keyH) {
+        lastDirection = direction;
+        direction = "";
+        speedUsedX = 0;
+        speedUsedY = 0;
+
+        //checks what direction will be moved in based on keyH
+        if(keyH.upPressed) {
+            direction = "Up";
+        }
+        if(keyH.downPressed) {
+            if(!direction.contains("Up ")) {
+                direction = "Down";
+            } else {
+                direction = "";
+            }
+        }
+        if(keyH.leftPressed) {
+            direction = direction.length() > 1 ? direction.concat(" ") : direction;
+            direction = direction.concat("Left");
+        }
+        if(keyH.rightPressed) {
+            if(!direction.contains("Left")){
+                direction = direction.length() > 1 ? direction.concat(" ") : direction;
+                direction = direction.concat("Right");
+            } else {
+                direction = direction.substring(0, direction.indexOf("Left"));
+            }
+        }
+        if(direction.length() > 1) {
+            status = keyH.shiftPressed ? "Sprint" : "Walk";
+        } else {
+            direction = lastDirection;
+            status = "Idle";
+            collisionOn = false;
+            //gp.cMoveChecker.checkTile(this);
+
+            //check obj collision
+            //int objIndex = gp.cMoveChecker.checkObject(this, true);
+            //super.pickUpObject(objIndex);
+        }
+        if(direction.contains(" ")) {   //diagonal movement
+            if(direction.contains("Up")) {
+                speedUsedY = -speed45;
+            }
+            if(direction.contains("Down")) {
+                speedUsedY = speed45;
+            }
+            if(direction.contains("Left")) {
+                speedUsedX = -speed45;
+            }
+            if(direction.contains("Right")) {
+                speedUsedX = speed45;
+            }
+        } else {
+            if(direction.contains("Up")) {
+                speedUsedY = -speed;
+            }
+            if(direction.contains("Down")) {
+                speedUsedY = speed;
+            }
+            if(direction.contains("Left")) {
+                speedUsedX = -speed;
+            }
+            if(direction.contains("Right")) {
+                speedUsedX = speed;
+            }
+        }
+        boolean sprinted = false;
+        if(status.contains("Sprint")) {
+            if(stamina > 0) {
+                stamina = stamina - 2 <= 0 ? 0 : stamina - 2;
+                sprint();
+            } else {
+                status = "Walk";
+                walk();
+                staminaRegen1 = false;
+                timerStaminaRegen1.reset();
+            }
+            staminaRegen2 = false;
+            timerStaminaRegen2.reset();
+            sprinted = true;
+
+        } else if( status.contains("Walk")) {
+            walk();
+        }
+        if(!sprinted && stamina < maxStamina) {
+            boolean canRegen = false;
+            if(staminaRegen1) { canRegen = true; }  //this is for using all Stamina
+            else if(timerStaminaRegen1.update() > timerStaminaRegen1.size()) {
+                staminaRegen1 = true;
+                timerStaminaRegen1.reset();
+            }
+            if(staminaRegen2) { canRegen = canRegen && true; } //this is for shortly after sprinting
+            else if(timerStaminaRegen2.update() > timerStaminaRegen2.size()) {
+                canRegen = canRegen && true;
+                staminaRegen2 = true;
+                timerStaminaRegen2.reset();
+
+            } else{
+                canRegen = false;
+            }
+            if(canRegen) { stamina++; }
+        }
+        updateImage();
+    }
 
     public void pickUpObject(int i) {
 
@@ -132,46 +246,22 @@ public abstract class Entity {
 
     //speeds are accurate to scale
     public void walk() {
-        if(collisionOn == false || collisionAmount > 0.0) {
+        if(!collisionOn || collisionAmount > 0.0) {
             if(status == "Walk") {
                 worldX += speedUsedX * collisionAmount;
                 worldY += speedUsedY * collisionAmount;
-//                switch (direction) {
-//                    case "up left":
-//                        worldY -= speedUsedY * collisionAmount;
-//                        worldX -= speedUsedX * collisionAmount;
-//                        break;
-//                    case "up right":
-//                        worldY -= speedUsedY * collisionAmount;
-//                        worldX += speedUsedX * collisionAmount;
-//                        break;
-//                    case "down left":
-//                        worldY += speedUsedY * collisionAmount;
-//                        worldX -= speedUsedX * collisionAmount;
-//                        break;
-//                    case "down right":
-//                        worldY += speedUsedY * collisionAmount;
-//                        worldX += speedUsedX * collisionAmount;
-//                        break;
-//
-//                    case "up":
-//                        worldY -= speedUsedY * collisionAmount;
-//                        break;
-//                    case "down":
-//                        worldY += speedUsedY * collisionAmount;
-//                        break;
-//                    case "left":
-//                        worldX -= speedUsedX * collisionAmount;
-//                        break;
-//                    case "right":
-//                        worldX += speedUsedX * collisionAmount;
-//                        break;
-//                    case "forward":
-//                        worldX += speedUsedX * collisionAmount;
-//                        worldY += speedUsedY * collisionAmount;
-//                        break;
-//                }
             }
         }
+    }
+    public void sprint() {
+        if (!collisionOn || collisionAmount > 0.0) {
+            if (status == "Sprint") {
+                worldX += speedUsedX * collisionAmount * 1.5;
+                worldY += speedUsedY * collisionAmount * 1.5;
+            }
+        }
+    }
+    public void idle() {
+
     }
 }

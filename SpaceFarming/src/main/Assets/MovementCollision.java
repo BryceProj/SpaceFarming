@@ -310,7 +310,7 @@ public class MovementCollision extends Collision {
         }
     }
 
-    public int checkObject(Entity entity, boolean player) {
+    public int checkObject(Entity entity, boolean player) { //needs a redo without scale as a factor
         int index = 999;
 
         for(int i = 0; i < entity.gp.obj.size(); i++) {
@@ -322,6 +322,7 @@ public class MovementCollision extends Collision {
                 entity.solidArea.height = (int)(entity.solidArea.height * entity.gp.scale);
 
                 //get object solid area pos
+                Rectangle area = new Rectangle();
                 entity.gp.obj.get(i).solidArea.x = (int)(entity.gp.obj.get(i).worldX + ((entity.gp.obj.get(i).solidArea.x + entity.gp.obj.get(i).imgOffX) * entity.gp.scale));
                 entity.gp.obj.get(i).solidArea.y = (int)(entity.gp.obj.get(i).worldY + ((entity.gp.obj.get(i).solidArea.y + entity.gp.obj.get(i).imgOffY) * entity.gp.scale));
                 entity.gp.obj.get(i).solidArea.width = (int)((entity.gp.obj.get(i).imgSizeX) * entity.gp.scale);
@@ -329,7 +330,7 @@ public class MovementCollision extends Collision {
 
                 //offset needs to be accounted for
                 if(!entity.direction.contains("Idle") && !entity.direction.contains("No_Move")) {
-                    if(entity.direction.contains("up")) {
+                    if(entity.direction.contains("Up")) {
                         entity.solidArea.y -= (entity.speedUsedY * entity.gp.scale);
                         if(entity.solidArea.intersects(entity.gp.obj.get(i).solidArea)) {
                             if(entity.gp.obj.get(i).collision == true) {
@@ -339,7 +340,7 @@ public class MovementCollision extends Collision {
                                 index = i;
                             }
                         }
-                    } else if(entity.direction.contains("down")) {
+                    } else if(entity.direction.contains("Down")) {
                         entity.solidArea.y += (entity.speedUsedY * entity.gp.scale);
                         if(entity.solidArea.intersects(entity.gp.obj.get(i).solidArea)) {
                             if(entity.gp.obj.get(i).collision == true) {
@@ -349,7 +350,7 @@ public class MovementCollision extends Collision {
                                 index = i;
                             }
                         }
-                    } else if(entity.direction.contains("left")) {
+                    } else if(entity.direction.contains("Left")) {
                         entity.solidArea.x -= (entity.speedUsedX * entity.gp.scale);
                         if(entity.solidArea.intersects(entity.gp.obj.get(i).solidArea)) {
                             if(entity.gp.obj.get(i).collision == true) {
@@ -359,7 +360,7 @@ public class MovementCollision extends Collision {
                                 index = i;
                             }
                         }
-                    } else if(entity.direction.contains("right")) {
+                    } else if(entity.direction.contains("Right")) {
                         entity.solidArea.x += (entity.speedUsedX * entity.gp.scale);
                         if(entity.solidArea.intersects(entity.gp.obj.get(i).solidArea)) {
                             if(entity.gp.obj.get(i).collision == true) {
@@ -372,7 +373,7 @@ public class MovementCollision extends Collision {
                     }
                 }
 
-                entity.solidArea = new Rectangle(entity.solidAreaBase);
+                //entity.solidArea = new Rectangle(entity.solidArea);
                 entity.gp.obj.get(i).solidArea = new Rectangle(0, 0, entity.gp.obj.get(i).imgSizeX, entity.gp.obj.get(i).imgSizeY);
             }
         }

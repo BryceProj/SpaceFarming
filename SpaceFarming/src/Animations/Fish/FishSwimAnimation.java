@@ -1,6 +1,7 @@
 package Animations.Fish;
 
 import Animations.SuperAnimation;
+import main.Assets.Timer;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -12,15 +13,14 @@ public class FishSwimAnimation extends SuperAnimation {
         //(xoff, yoff, xsize, ysize)
         images = new BufferedImage[1][8];
         offsetSize = new int[1][8][4];
-        timing = new int[8];
+        timer = new Timer(new int[8], true);
         for(int i = 0; i < 8; i++) {
             if(i == 0) {
-                timing[i] = 0;
+                timer.maxTime[i] = 0;
             } else {
-                timing[i] = timing[i - 1] + 7 + (int)(Math.random() * 6);
+                timer.maxTime[i] = timer.maxTime[i - 1] + 7 + (int)(Math.random() * 6);
             }
         }
-        animationTime = timing[timing.length - 1] + 10;
         movingHitBox = new Rectangle(0, 0, 22, 66);
         oneTime = true;
         try {
@@ -79,14 +79,13 @@ public class FishSwimAnimation extends SuperAnimation {
     }
 
     public void updateTimes() {
-        timing = new int[8];
+        timer.reset();
         for(int i = 0; i < 8; i++) {
             if(i == 0) {
-                timing[i] = 0;
+                timer.maxTime[i] = 0;
             } else {
-                timing[i] = timing[i - 1] + 7 + (int)(Math.random() * 6);
+                timer.maxTime[i] = timer.maxTime[i - 1] + 7 + (int)(Math.random() * 6);
             }
         }
-        animationTime = timing[timing.length - 1] + 10;
     }
 }

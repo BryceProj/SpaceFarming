@@ -7,13 +7,14 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-public class HealthBar {
+public class StatBar {
     public Entity entity;
     double maxSize = 32.0;
     double scaling;
+    Color staminaColor = Color.green;
     public BufferedImage barImage, orbImage, circleImage;
 
-    public HealthBar(Entity entity) {
+    public StatBar(Entity entity) {
         this.entity = entity;
         try {
             orbImage = ImageIO.read(getClass().getResourceAsStream("/objects/SoulOrb.png"));
@@ -31,6 +32,20 @@ public class HealthBar {
         g2.translate(10, 10);
         g2.drawImage(barImage, 30, 0, 640, 64, null);
         //health and stamina
+        //health
+
+        //stamina
+        float staminaPercent = (float)(entity.stamina) / (float)(entity.maxStamina);
+        int helpColor = (int)(255 * (1.0 - staminaPercent));
+        if(helpColor > 255) { helpColor = 255; } else if(helpColor <= 0) { helpColor = 0; }
+        staminaColor = new Color(helpColor, 255, 0);
+
+        int staminaBarWidth = (int)(staminaPercent * 640);
+        g2.setColor(staminaColor);
+        g2.fillRoundRect(30, 32, staminaBarWidth, 20, 15, 20);
+        g2.setColor(null);
+        // stamina end
+
         g2.drawRect(30, 8, 100, 24);
         g2.drawImage(circleImage, 0, 0, 64, 64, null);
 
